@@ -40,10 +40,9 @@ service:
   type: NodePort
   port:
     - name: http
-      port: 80
+      port: 30036
       protocol: TCP
-      targetPort: 8888
-      nodePort: 30036
+      targetPort: http
 
 ingress:
   enabled: false
