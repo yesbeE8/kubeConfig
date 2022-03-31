@@ -82,7 +82,7 @@ tolerations: []
 affinity: {}
 
 env:
-  - name: "IP"
-    value: "192.168.1.1"
+#  - name: "IP"
+#    value: "192.168.1.1"
   - name: "PORT"
     value: "8888"
