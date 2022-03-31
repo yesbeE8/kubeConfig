@@ -59,8 +59,8 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      env:
-        { { - range .Values.env } }
-        - name: { { .name } }
-          value: { { .value } }
-        { { - end } }
+#      env:
+#        { { - range .Values.env } }
+#        - name: { { .name } }
+#          value: { { .value } }
+#        { { - end } }
