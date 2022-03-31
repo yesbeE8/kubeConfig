@@ -38,9 +38,8 @@ securityContext: {}
 
 service:
   type: NodePort
-  port:
-    - name: http
-      port: 30036
+  ports:
+    - port: 8888
       protocol: TCP
       targetPort: http
 
