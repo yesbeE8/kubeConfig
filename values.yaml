@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: 172.16.28.217:12000/msa-config-server
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "0.0.3"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -80,3 +80,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+env:
+  - name: "IP"
+    value: "192.168.1.1"
+  - name: "PORT"
+    value: "8888"
