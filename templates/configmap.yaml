@@ -1,0 +1,9 @@
+apiVersiom: v1
+kind: ConfigMap
+metadata:
+  name: hello-configmap
+  labels:
+    {{- include "demo.labels" . | nindent 4 }}
+data:
+  {{ .Values.config.name }}: |
+    {{- toYaml .Values.config.data | nindent 4 }}
