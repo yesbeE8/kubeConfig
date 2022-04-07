@@ -3,7 +3,6 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-env: dev
 
 image:
   repository: 172.16.28.217:12000/helloworld
@@ -94,3 +93,7 @@ config:
     database:
       ip: 10.20.30.20
       name: ui-dev
+
+env:
+  name: JAVA_OPTIONS
+  value: -Dspring.profiles.active=dev

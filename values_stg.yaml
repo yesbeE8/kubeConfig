@@ -90,3 +90,7 @@ config:
       ip: 120.21.31.10
       name: ui-stg
 
+env:
+  name: JAVA_OPTIONS
+  value: -Dspring.profiles.active=stg
+
