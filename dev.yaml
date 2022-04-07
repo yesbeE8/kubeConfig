@@ -1,0 +1,228 @@
+---
+# Source: demo/charts/child/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dev-dep-child
+  labels:
+    helm.sh/chart: child-0.1.0
+    app.kubernetes.io/name: child
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: demo/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dev-dep-demo
+  labels:
+    helm.sh/chart: demo-0.1.0
+    app.kubernetes.io/name: demo
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: demo/templates/configmap.yaml
+apiVersiom: v1
+kind: ConfigMap
+metadata:
+  name: hello-configmap
+  labels:
+    helm.sh/chart: demo-0.1.0
+    app.kubernetes.io/name: demo
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  config.yaml: |
+    database:
+      ip: 10.20.30.20
+      name: ui-dev
+    logfile: /app/var/log.txt
+    timeout: 10s
+---
+# Source: demo/charts/child/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-dep-child
+  labels:
+    helm.sh/chart: child-0.1.0
+    app.kubernetes.io/name: child
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: child
+    app.kubernetes.io/instance: dev-dep
+---
+# Source: demo/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-dep-demo
+  labels:
+    helm.sh/chart: demo-0.1.0
+    app.kubernetes.io/name: demo
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: NodePort
+  ports:
+    - port: 8888
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: demo
+    app.kubernetes.io/instance: dev-dep
+---
+# Source: demo/charts/child/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-dep-child
+  labels:
+    helm.sh/chart: child-0.1.0
+    app.kubernetes.io/name: child
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: child
+      app.kubernetes.io/instance: dev-dep
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: child
+        app.kubernetes.io/instance: dev-dep
+    spec:
+      serviceAccountName: dev-dep-child
+      securityContext:
+        {}
+      containers:
+        - name: child
+          securityContext:
+            {}
+          image: "nginx:v0.0.3"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+---
+# Source: demo/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-dep-demo
+  labels:
+    helm.sh/chart: demo-0.1.0
+    app.kubernetes.io/name: demo
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo
+      app.kubernetes.io/instance: dev-dep
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo
+        app.kubernetes.io/instance: dev-dep
+    spec:
+      serviceAccountName: dev-dep-demo
+      securityContext:
+        {}
+      containers:
+        - name: demo
+          securityContext:
+            {}
+          image: "172.16.28.217:12000/helloworld:0.13"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+#          livenessProbe:
+#            httpGet:
+#              path: /
+#              port: http
+#          readinessProbe:
+#            httpGet:
+#              path: /
+#              port: http
+          resources:
+            {}
+#      env:
+#        { { - range .Values.env } }
+#        - name: { { .name } }
+#          value: { { .value } }
+#        { { - end } }
+---
+# Source: demo/charts/child/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "dev-dep-child-test-connection"
+  labels:
+    helm.sh/chart: child-0.1.0
+    app.kubernetes.io/name: child
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['dev-dep-child:80']
+  restartPolicy: Never
+---
+# Source: demo/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "dev-dep-demo-test-connection"
+  labels:
+    helm.sh/chart: demo-0.1.0
+    app.kubernetes.io/name: demo
+    app.kubernetes.io/instance: dev-dep
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['dev-dep-demo:8888']
+  restartPolicy: Never
