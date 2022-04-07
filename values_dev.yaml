@@ -93,7 +93,6 @@ config:
     database:
       ip: 10.20.30.20
       name: ui-dev
-
 env:
-  name: JAVA_OPTIONS
+  name: JAVA_OPTION
   value: -Dspring.profiles.active=dev
