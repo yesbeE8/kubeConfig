@@ -38,7 +38,7 @@ securityContext: {}
 
 service:
   type: NodePort
-  port: 8888
+  port: 8080
 
 ingress:
   enabled: false
@@ -91,6 +91,6 @@ config:
       name: ui-prod
 
 env:
-  name: JAVA_OPTIONS
-  value: -Dspring.profiles.active=prod
+  name: SPRING_PROFILES_ACTIVE
+  value: prod
 

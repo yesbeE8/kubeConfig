@@ -37,19 +37,11 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-#          livenessProbe:
-#            httpGet:
-#              path: /
-#              port: http
-#          readinessProbe:
-#            httpGet:
-#              path: /
-#              port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}        
           env:
-          - name: JAVA_OPTION
-            value: {{ .Values.env.value | nindent 12 }}
+            - name: SPRING_PROFILES_ACTIVE
+              value: "{{ .Values.env.value | nindent 14 }}"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -62,8 +54,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-#      env:
-#        { { - range .Values.env } }
-#        - name: { { .name } }
-#          value: { { .value } }
-#        { { - end } }

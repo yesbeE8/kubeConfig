@@ -10,7 +10,8 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "0.13"
 
-imagePullSecrets: []
+imagePullSecrets: 
+  - name: nexus
 nameOverride: ""
 fullnameOverride: ""
 
@@ -39,7 +40,7 @@ securityContext: {}
 
 service:
   type: NodePort
-  port: 8888
+  port: 8080
 
 ingress:
   enabled: false
@@ -94,5 +95,5 @@ config:
       ip: 10.20.30.20
       name: ui-dev
 env:
-  name: JAVA_OPTION
-  value: -Dspring.profiles.active=dev
+  name: SPRING_PROFILES_ACTIVE
+  value: dev
